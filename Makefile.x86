@@ -1,0 +1,13 @@
+bin_PROGRAMS =
+libexec_PROGRAMS =
+
+noinst_LTLIBRARIES =
+
+noinst_LTLIBRARIES += stack/libblestack.la
+
+stack_libblestack_la_SOURCES = stack/ll.h stack/ll.c   \
+			       stack/bci.h stack/bci.c
+
+libexec_PROGRAMS += examples/platform/nrf51822/helloworld/hello
+examples_platform_nrf51822_helloworld_hello_SOURCES = stack/libblestack.la \
+				examples/platform/nrf51822/helloworld/hello.c

@@ -1,0 +1,16 @@
+#!/bin/sh
+
+if [ -f config.status ]; then
+	make maintainer-clean
+fi
+
+if [ -f configure.ac ]; then
+	rm configure.ac
+fi
+ln -s configure.ubertooth configure.ac
+
+./bootstrap && \
+	./configure --enable-maintainer-mode	\
+		--enable-debug			\
+		--disable-optimization		\
+		--with-platform=ubertooth $*

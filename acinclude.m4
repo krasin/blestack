@@ -1,15 +1,3 @@
-AC_DEFUN([AC_PROG_CC_PIE], [
-	AC_CACHE_CHECK([whether ${CC-cc} accepts -fPIE], ac_cv_prog_cc_pie, [
-		echo 'void f(){}' > conftest.c
-		if test -z "`${CC-cc} -fPIE -pie -c conftest.c 2>&1`"; then
-			ac_cv_prog_cc_pie=yes
-		else
-			ac_cv_prog_cc_pie=no
-		fi
-		rm -rf conftest*
-	])
-])
-
 AC_DEFUN([COMPILER_FLAGS], [
 	if (test "${CFLAGS}" = ""); then
 		CFLAGS="-Wall"
@@ -39,6 +27,37 @@ AC_DEFUN([AC_ARG_BLESTACK], [
 	AC_ARG_ENABLE(optimization, AC_HELP_STRING([--disable-optimization], [disable code optimization]), [
 		optimization_enable=${enableval}
 	])
+
+	AC_ARG_WITH([sdkdir], AC_HELP_STRING([--with-sdkdir=DIR],
+			[path to NRF SDK directory]), [path_sdkdir=${withval}])
+
+	if (test -z "${path_sdkdir}"); then
+		AC_MSG_ERROR([NRF SDK directory is required])
+	fi
+
+	AC_SUBST(SDK_DIR, [${path_sdkdir}])
+
+	AC_ARG_WITH([builddir], AC_HELP_STRING([--with-builddir=DIR],
+			[path to build directory]), [path_builddir=${withval}])
+
+	if (test "${path_builddir}"); then
+		AC_SUBST(BUILD_DIR, [${path_builddir}])
+	else
+		AC_SUBST(BUILD_DIR, "build")
+	fi
+
+	AC_ARG_WITH([platform], AC_HELP_STRING([--with-platform=nrf|ubertooth],
+			[Select target platform]), [platform_val=${withval}])
+
+	if (test "${platform_val}" == "nrf"); then
+		AM_CONDITIONAL(PLATFORM_NRF, true)
+		AM_CONDITIONAL(PLATFORM_UBERTOOTH, false)
+	elif (test "${platform_val}" == "ubertooth"); then
+		AM_CONDITIONAL(PLATFORM_NRF, false)
+		AM_CONDITIONAL(PLATFORM_UBERTOOTH, true)
+	else
+		AC_MSG_ERROR([Platform is required])
+	fi
 
 	if (test "${debug_enable}" = "yes" && test "${ac_cv_prog_cc_g}" = "yes"); then
 		CFLAGS="-g $CFLAGS"

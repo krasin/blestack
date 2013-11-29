@@ -1,22 +1,16 @@
 AM_MAKEFLAGS = --no-print-directory
+AM_CPPFLAGS =
 
-bin_PROGRAMS =
-libexec_PROGRAMS =
+STACK_SOURCE_FILES = stack/ll.c stack/bci.c
 
-builtin_modules =
-builtin_sources =
-builtin_nodist =
+STACK_OBJECT_FILES = $(STACK_SOURCE_FILES:.c=.o)
 
-stack_sources = stack/ll.h stack/ll.c			\
-		stack/bci.h stack/bci.c
+AM_CPPFLAGS += -Istack
 
-builtin_sources += examples/platform/nrf51822/helloworld/hello.c
-libexec_PROGRAMS += examples/platform/nrf51822/helloworld/hello
+if PLATFORM_NRF
+include Makefile.nrf
+endif
 
-INCLUDES = -I$(builddir)/stack
-
-CLEANFILES =
-
-MAINTAINERCLEANFILES = Makefile.in \
-	aclocal.m4 configure config.h.in config.sub config.guess \
-	ltmain.sh depcomp missing install-sh mkinstalldirs
+if PLATFORM_UBERTOOTH
+include Makefile.ubertooth
+endif
