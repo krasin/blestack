@@ -1,6 +1,6 @@
 PLATFORM_SOURCE_FILES = $(SDK_DIR)/Nordic/nrf51822/Source/templates/system_nrf51.c
 PLATFORM_ASM_FILES = $(SDK_DIR)/Nordic/nrf51822/Source/templates/gcc/gcc_startup_nrf51.s
-PROJECT_SOURCE_FILES = examples/platform/nrf51822/helloworld/main.c
+PROJECT_SOURCE_FILES = examples/helloworld/main.c
 
 AM_CPPFLAGS += -I$(SDK_DIR)/Nordic/nrf51822/Include
 AM_CPPFLAGS += -I$(SDK_DIR)/Nordic/nrf51822/Include/gcc
