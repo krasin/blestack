@@ -3,7 +3,7 @@ AC_DEFUN([COMPILER_FLAGS], [
 		CFLAGS="-Wall"
 	fi
 	if (test "$USE_MAINTAINER_MODE" = "yes"); then
-		CFLAGS+=" -Werror -Wextra"
+		CFLAGS+=" -Werror"
 		CFLAGS+=" -Wno-unused-parameter"
 		CFLAGS+=" -Wno-missing-field-initializers"
 		CFLAGS+=" -Wdeclaration-after-statement"
