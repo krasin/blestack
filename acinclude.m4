@@ -50,8 +50,12 @@ AC_DEFUN([AC_ARG_BLESTACK], [
 			[Select target platform]), [platform_val=${withval}])
 
 	if (test "${platform_val}" == "nrf"); then
-		AM_CONDITIONAL(PLATFORM_NRF, true)
 		AM_CONDITIONAL(PLATFORM_UBERTOOTH, false)
+		AM_CONDITIONAL(PLATFORM_NRF, true)
+		AM_CONDITIONAL(NRF51, true)
+		AM_CONDITIONAL(NRF51822_QFAA_CA, true)
+		AM_CONDITIONAL(BOARD_PCA10001, true)
+
 	elif (test "${platform_val}" == "ubertooth"); then
 		AM_CONDITIONAL(PLATFORM_NRF, false)
 		AM_CONDITIONAL(PLATFORM_UBERTOOTH, true)

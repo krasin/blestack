@@ -33,4 +33,8 @@ AC_SUBST(TYPE, ${TYPE})
 
 AM_CONFIG_HEADER(config.h)
 
-AC_OUTPUT(Makefile)
+AC_OUTPUT([ Makefile
+	   stack/Makefile
+	   platform/nrf51822/Makefile
+	   examples/helloworld/Makefile
+])

@@ -1,16 +1,21 @@
 AM_MAKEFLAGS = --no-print-directory
-AM_CPPFLAGS =
-
-STACK_SOURCE_FILES = stack/ll.c stack/bci.c
-
-STACK_OBJECT_FILES = $(STACK_SOURCE_FILES:.c=.o)
-
-AM_CPPFLAGS += -Istack
+MAINTAINERCLEANFILES =
 
 if PLATFORM_NRF
-include Makefile.nrf
+SUBDIRS = stack platform/nrf51822 examples/helloworld
 endif
 
 if PLATFORM_UBERTOOTH
 include Makefile.ubertooth
 endif
+
+MAINTAINERCLEANFILES += Makefile.in		\
+			aclocal.m4		\
+			configure		\
+			config.h		\
+			ltmain.sh		\
+			autom4te.cache		\
+			stamp-h1
+
+clean-local:
+	$(RM) -rf $(MAINTAINERCLEANFILES)
