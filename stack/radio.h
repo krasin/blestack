@@ -24,4 +24,11 @@
  *  SOFTWARE.
  */
 
+typedef void (*radio_handler) (uint8_t evt, void *data);
+
 int16_t radio_init(void);
+int16_t radio_stop(void);
+int16_t radio_send(uint8_t ch, uint32_t aa, uint32_t crc, const uint8_t *data,
+								uint8_t len);
+int16_t radio_recv(uint8_t ch, uint32_t aa, uint32_t crc);
+void radio_register_handler(radio_handler hdlr);
