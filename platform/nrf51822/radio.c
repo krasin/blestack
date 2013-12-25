@@ -35,6 +35,7 @@
 #define MAX_BUF_LEN			(RADIO_MAX_PDU_LEN + 1) /* S0, LEN
 					and S1 occupies 3 bytes, not 2 */
 
+static radio_handler handler;
 static uint8_t buf[MAX_BUF_LEN];
 
 void RADIO_IRQHandler(void)
@@ -42,6 +43,10 @@ void RADIO_IRQHandler(void)
 	NRF_RADIO->EVENTS_END = 0UL;
 }
 
+void radio_register_handler(radio_handler hdlr)
+{
+	handler = hdlr;
+}
 
 int16_t radio_init(void)
 {
@@ -85,6 +90,8 @@ int16_t radio_init(void)
 
 	NRF_RADIO->PACKETPTR = (uint32_t) buf;
 	memset(buf, 0, sizeof(buf));
+
+	handler = NULL;
 
 	return 0;
 }
