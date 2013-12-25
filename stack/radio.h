@@ -25,8 +25,10 @@
  */
 
 #define RADIO_MAX_PDU_LEN		39
+#define RADIO_MIN_PDU_LEN		2
 
 #define RADIO_EVT_RX_COMPLETED		1
+#define RADIO_EVT_TX_COMPLETED		2
 
 struct radio_packet {
 	uint8_t pdu[RADIO_MAX_PDU_LEN];
