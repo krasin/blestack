@@ -26,6 +26,14 @@
 
 #define RADIO_MAX_PDU_LEN		39
 
+#define RADIO_EVT_RX_COMPLETED		1
+
+struct radio_packet {
+	uint8_t pdu[RADIO_MAX_PDU_LEN];
+	uint8_t len;
+	uint8_t crc;
+};
+
 typedef void (*radio_handler) (uint8_t evt, void *data);
 
 int16_t radio_init(void);

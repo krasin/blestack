@@ -35,12 +35,80 @@
 #define MAX_BUF_LEN			(RADIO_MAX_PDU_LEN + 1) /* S0, LEN
 					and S1 occupies 3 bytes, not 2 */
 
+#define STATUS_INITIALIZED		1
+#define STATUS_RX			2
+#define STATUS_BUSY			STATUS_RX
+
 static radio_handler handler;
 static uint8_t buf[MAX_BUF_LEN];
+static uint8_t status;
+
+#define COMMON_INITIALIZATION(ch, aa, crc)				\
+	do {								\
+		int8_t freq;						\
+		if (!(status & STATUS_INITIALIZED))			\
+			return -1;					\
+		if (status & STATUS_BUSY)				\
+			return -1;					\
+		freq = ch2freq(ch);					\
+		if (freq < 0)						\
+			return -1;					\
+		NRF_RADIO->DATAWHITEIV = ch & 0x3F;			\
+		NRF_RADIO->FREQUENCY = freq;				\
+		NRF_RADIO->BASE0 = (aa << 8) & 0xFFFFFF00;		\
+		NRF_RADIO->PREFIX0 = (aa >> 24) & 0x000000FF;		\
+		NRF_RADIO->CRCINIT = crc;				\
+	} while (0)
+
+static __inline int8_t ch2freq(uint8_t ch)
+{
+	switch (ch) {
+	case 37:
+		return 2;
+	case 38:
+		return 26;
+	case 39:
+		return 80;
+	default:
+		if (ch > 39)
+			return -1;
+		else if (ch < 11)
+			return 4 + (2 * ch);
+		else
+			return 6 + (2 * ch);
+	}
+}
 
 void RADIO_IRQHandler(void)
 {
+	struct radio_packet packet;
+	uint8_t old_status;
+
 	NRF_RADIO->EVENTS_END = 0UL;
+
+	old_status = status;
+	status = STATUS_INITIALIZED;
+
+	if ((old_status & STATUS_RX) && handler) {
+		packet.len = buf[1] + 2;
+		packet.crc = NRF_RADIO->CRCSTATUS;
+
+		packet.pdu[0] = buf[0];
+		packet.pdu[1] = ((buf[2] & 0x3) << 6) | (buf[1] & 0x3F);
+		memcpy(packet.pdu + 2, buf + 3, buf[1]);
+
+		handler(RADIO_EVT_RX_COMPLETED, &packet);
+	}
+}
+
+int16_t radio_recv(uint8_t ch, uint32_t aa, uint32_t crc)
+{
+	COMMON_INITIALIZATION(ch, aa, crc);
+
+	NRF_RADIO->TASKS_RXEN = 1UL;
+	status |= STATUS_RX;
+
+	return 0;
 }
 
 void radio_register_handler(radio_handler hdlr)
@@ -91,6 +159,7 @@ int16_t radio_init(void)
 	NRF_RADIO->PACKETPTR = (uint32_t) buf;
 	memset(buf, 0, sizeof(buf));
 
+	status = STATUS_INITIALIZED;
 	handler = NULL;
 
 	return 0;
