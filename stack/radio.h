@@ -24,6 +24,8 @@
  *  SOFTWARE.
  */
 
+#define RADIO_MAX_PDU_LEN		39
+
 typedef void (*radio_handler) (uint8_t evt, void *data);
 
 int16_t radio_init(void);
