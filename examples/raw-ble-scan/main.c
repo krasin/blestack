@@ -89,7 +89,6 @@ static __inline void scan_channel(uint8_t channel, uint8_t frequency,
 					uint32_t window, const uint8_t *pdu)
 {
 	DBG("");
-	ch = channel;
 
 	NRF_RADIO->FREQUENCY = frequency;
 	NRF_RADIO->DATAWHITEIV = channel & 0x3F;
